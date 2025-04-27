@@ -1,7 +1,8 @@
+// src/pages/ingredientsPage/index.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getIngredients, Ingredient } from "../../service/ingredientService";
-import { NavigationHeader } from "./navigationHeader";
+import { NavigationHeader } from "../../components/navigationHeader"; // Caminho atualizado
 import { IngredientCard } from "../../components/ingredientCard";
 
 export function IngredientsPage() {
@@ -40,6 +41,25 @@ export function IngredientsPage() {
   function navigateToRecipes() {
     navigate('/recipes');
   }
+
+  // Configuração dos itens de navegação
+  const navigationItems = [
+    {
+      label: "Home",
+      onClick: navigateToHome,
+      variant: "secondary" as const
+    },
+    {
+      label: "Ver Receitas",
+      onClick: navigateToRecipes,
+      variant: "primary" as const
+    },
+    {
+      label: "Logout",
+      onClick: handleLogout,
+      variant: "danger" as const
+    }
+  ];
 
   const filteredIngredients = ingredients.filter(ingredient => 
     ingredient.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -85,9 +105,8 @@ export function IngredientsPage() {
     <div className="min-h-screen bg-gray-50 py-6">
       <div className="container mx-auto max-w-7xl px-4">
         <NavigationHeader 
-          onNavigateHome={navigateToHome}
-          onNavigateRecipes={navigateToRecipes}
-          onLogout={handleLogout}
+          title="Lista de Ingredientes"
+          navigationItems={navigationItems}
         />
 
         <div className="mb-6">
