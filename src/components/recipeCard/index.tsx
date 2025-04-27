@@ -40,13 +40,13 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             <div className="rounded bg-yellow-50 p-2 text-center">
               <span className="block text-xs text-gray-500">Gorduras</span>
               <span className="text-lg font-bold text-yellow-600">
-                {recipe.totalFat}g
+                {parseFloat(recipe.totalFat.toFixed(2))}g
               </span>
             </div>
             <div className="rounded bg-red-50 p-2 text-center">
               <span className="block text-xs text-gray-500">Gorduras Sat.</span>
               <span className="text-lg font-bold text-red-600">
-                {recipe.saturatedFat}g
+                {parseFloat(recipe.saturatedFat.toFixed(2))}g
               </span>
             </div>
             <div className="rounded bg-teal-50 p-2 text-center">
