@@ -2,21 +2,23 @@ import { useState } from "react";
 import api from "../../service/api";
 import { useNavigate } from "react-router-dom";
 
-export function LoginForm() {
+export function RegisterForm() {
   const navigate = useNavigate();
 
+  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
     try {
-      const response = await api.post("/auth/login", {
+      const response = await api.post("/auth/register", {
+        name,
         email,
         password,
       });
@@ -42,11 +44,11 @@ export function LoginForm() {
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Entre na sua conta
+            Crie sua conta
           </h2>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+        <form className="mt-8 space-y-6" onSubmit={handleRegister}>
           {error && (
             <div className="rounded-md bg-red-50 p-4">
               <p className="text-sm text-red-700">{error}</p>
@@ -54,6 +56,24 @@ export function LoginForm() {
           )}
 
           <div className="space-y-4 rounded-md">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Nome
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                placeholder="Seu nome"
+              />
+            </div>
             <div>
               <label
                 htmlFor="email"
@@ -144,19 +164,19 @@ export function LoginForm() {
                   Entrando...
                 </span>
               ) : (
-                "Entrar"
+                "Cadastrar"
               )}
             </button>
           </div>
         </form>
 
         <p className="mt-2 text-center text-sm text-gray-600">
-          Não tem uma conta?{" "}
+          Já tem uma conta?{" "}
           <a
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/login")}
             className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
           >
-            Cadastre-se
+            Entrar
           </a>
         </p>
       </div>
