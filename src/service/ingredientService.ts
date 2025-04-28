@@ -42,7 +42,7 @@ export interface IngredientResponse {
 
 export const getIngredients = async (): Promise<IngredientsResponse> => {
   const token = localStorage.getItem("token");
-  const response = await api.get("/ingredients", {
+  const response = await api.get("/ingredients/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
