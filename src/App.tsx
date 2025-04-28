@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { HomePage } from "./pages/homePage";
 import { LoginPage } from "./pages/loginPage";
-import { RecipesPage } from "./pages/recipes";
+import { RecipesPage } from "./pages/recipesPage";
 import { IngredientsPage } from "./pages/ingredientsPage";
 import { PrivateRoute } from "./routes/privateRoute";
 import { NotFoundPage } from "./pages/notFoundPage";

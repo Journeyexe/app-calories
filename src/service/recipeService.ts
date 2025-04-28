@@ -36,7 +36,7 @@ export interface RecipesResponse {
 
 export const getRecipes = async (): Promise<RecipesResponse> => {
   const token = localStorage.getItem("token");
-  const response = await api.get("/recipes", {
+  const response = await api.get("/recipes/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

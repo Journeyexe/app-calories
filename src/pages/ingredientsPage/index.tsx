@@ -1,9 +1,9 @@
-// src/pages/ingredientsPage/index.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getIngredients, Ingredient } from "../../service/ingredientService";
-import { NavigationHeader } from "../../components/navigationHeader"; // Caminho atualizado
+import { NavigationHeader } from "../../components/navigationHeader";
 import { IngredientCard } from "../../components/ingredientCard";
+import { AddIngredientForm } from "../../components/ingredientForm";
 
 export function IngredientsPage() {
   const navigate = useNavigate();
@@ -11,20 +11,22 @@ export function IngredientsPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [showAddForm, setShowAddForm] = useState<boolean>(false);
+
+  const fetchIngredients = async () => {
+    setLoading(true);
+    try {
+      const response = await getIngredients();
+      setIngredients(response.data);
+    } catch (err) {
+      console.error("Erro ao buscar ingredientes:", err);
+      setError("Erro ao carregar ingredientes. Por favor, tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const response = await getIngredients();
-        setIngredients(response.data);
-      } catch (err) {
-        console.error("Erro ao buscar ingredientes:", err);
-        setError("Erro ao carregar ingredientes. Por favor, tente novamente.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchIngredients();
   }, []);
 
@@ -40,6 +42,11 @@ export function IngredientsPage() {
 
   function navigateToRecipes() {
     navigate('/recipes');
+  }
+
+  function handleAddIngredientSuccess() {
+    setShowAddForm(false);
+    fetchIngredients();
   }
 
   // Configuração dos itens de navegação
@@ -65,7 +72,7 @@ export function IngredientsPage() {
     ingredient.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) {
+  if (loading && ingredients.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
         <div className="rounded-md bg-white p-6 shadow-md">
@@ -81,7 +88,7 @@ export function IngredientsPage() {
     );
   }
 
-  if (error) {
+  if (error && ingredients.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
         <div className="rounded-md bg-red-50 p-6 text-center shadow-md">
@@ -91,7 +98,7 @@ export function IngredientsPage() {
           <h2 className="mt-3 text-lg font-medium text-gray-900">Erro</h2>
           <p className="mt-2 text-gray-600">{error}</p>
           <button 
-            onClick={() => window.location.reload()} 
+            onClick={() => fetchIngredients()} 
             className="mt-4 rounded-md bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700"
           >
             Tentar Novamente
@@ -110,23 +117,37 @@ export function IngredientsPage() {
         />
 
         <div className="mb-6">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Buscar ingredientes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 pl-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+            <div className="relative w-full md:max-w-md">
+              <input
+                type="text"
+                placeholder="Buscar ingredientes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 pl-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
+            
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+            >
+              <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Adicionar Ingrediente
+            </button>
           </div>
         </div>
 
-        {filteredIngredients.length === 0 ? (
+        {loading && <div className="mb-4 text-center text-gray-600">Atualizando ingredientes...</div>}
+
+        {!loading && filteredIngredients.length === 0 ? (
           <div className="rounded-lg bg-white p-8 text-center shadow">
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -144,6 +165,13 @@ export function IngredientsPage() {
               <IngredientCard key={ingredient._id} ingredient={ingredient} />
             ))}
           </div>
+        )}
+
+        {showAddForm && (
+          <AddIngredientForm 
+            onSuccess={handleAddIngredientSuccess} 
+            onCancel={() => setShowAddForm(false)} 
+          />
         )}
       </div>
     </div>
