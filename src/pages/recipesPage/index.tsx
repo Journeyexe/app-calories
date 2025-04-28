@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRecipes, Recipe } from "../../service/recipeService";
@@ -12,7 +11,7 @@ export function RecipesPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filterType, setFilterType] = useState<string>("all");
-  const [showAddForm, setShowAddForm] = useState<boolean>(false);
+  // const [showAddForm, setShowAddForm] = useState<boolean>(false);
 
   const fetchRecipes = async () => {
     try {
@@ -44,10 +43,10 @@ export function RecipesPage() {
     navigate("/ingredients");
   }
 
-  function handleAddIngredientSuccess() {
-    setShowAddForm(false);
-    fetchRecipes();
-  }
+  // function handleAddIngredientSuccess() {
+  //   setShowAddForm(false);
+  //   fetchRecipes();
+  // }
 
   // Funções de filtragem
   const filterByProtein = (recipe: Recipe) => recipe.protein > 15;
@@ -196,7 +195,7 @@ export function RecipesPage() {
             </div>
 
             <button
-              onClick={() => setShowAddForm(true)}
+              // onClick={() => setShowAddForm(true)}
               className="flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
             >
               <svg
