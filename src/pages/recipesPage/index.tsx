@@ -1,4 +1,4 @@
-// src/pages/recipes/index.tsx
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRecipes, Recipe } from "../../service/recipeService";
@@ -12,20 +12,21 @@ export function RecipesPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filterType, setFilterType] = useState<string>("all");
+  const [showAddForm, setShowAddForm] = useState<boolean>(false);
+
+  const fetchRecipes = async () => {
+    try {
+      const response = await getRecipes();
+      setRecipes(response.data);
+    } catch (err) {
+      console.error("Erro ao buscar receitas:", err);
+      setError("Erro ao carregar receitas. Por favor, tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await getRecipes();
-        setRecipes(response.data);
-      } catch (err) {
-        console.error("Erro ao buscar receitas:", err);
-        setError("Erro ao carregar receitas. Por favor, tente novamente.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchRecipes();
   }, []);
 
@@ -41,6 +42,11 @@ export function RecipesPage() {
 
   function navigateToIngredients() {
     navigate("/ingredients");
+  }
+
+  function handleAddIngredientSuccess() {
+    setShowAddForm(false);
+    fetchRecipes();
   }
 
   // Funções de filtragem
@@ -162,17 +168,39 @@ export function RecipesPage() {
         />
 
         <div className="mb-6 space-y-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Buscar receitas..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 pl-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+            <div className="relative w-full md:max-w-md">
+              <input
+                type="text"
+                placeholder="Buscar ingredientes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 pl-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+            >
               <svg
-                className="h-5 w-5 text-gray-400"
+                className="mr-2 h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -182,10 +210,11 @@ export function RecipesPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                 />
               </svg>
-            </div>
+              Adicionar Receita
+            </button>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -249,13 +278,14 @@ export function RecipesPage() {
               ></path>
             </svg>
             <h2 className="mt-4 text-lg font-medium text-gray-900">
-              Nenhuma receita encontrada
+              {/* Nenhuma receita encontrada */}
+              Em Breve
             </h2>
-            <p className="mt-2 text-gray-600">
+            {/* <p className="mt-2 text-gray-600">
               {searchTerm
                 ? `Não encontramos resultados para "${searchTerm}" com os filtros selecionados.`
                 : "Nenhuma receita disponível com os filtros selecionados."}
-            </p>
+            </p> */}
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -264,6 +294,12 @@ export function RecipesPage() {
             ))}
           </div>
         )}
+        {/* {showAddForm && (
+          <AddRecipeForm
+            onSuccess={handleAddIngredientSuccess}
+            onCancel={() => setShowAddForm(false)}
+          />
+        )} */}
       </div>
     </div>
   );
