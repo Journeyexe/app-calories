@@ -28,13 +28,13 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             <div className="rounded bg-green-50 p-2 text-center">
               <span className="block text-xs text-gray-500">Carboidratos</span>
               <span className="text-lg font-bold text-green-600">
-                {recipe.carbohydrate}g
+                {parseFloat(recipe.carbohydrate.toFixed(2))}g
               </span>
             </div>
             <div className="rounded bg-purple-50 p-2 text-center">
               <span className="block text-xs text-gray-500">Proteínas</span>
               <span className="text-lg font-bold text-purple-600">
-                {recipe.protein}g
+                {parseFloat(recipe.protein.toFixed(2))}g
               </span>
             </div>
             <div className="rounded bg-yellow-50 p-2 text-center">
