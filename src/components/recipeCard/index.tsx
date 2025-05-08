@@ -52,13 +52,13 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             <div className="rounded bg-teal-50 p-2 text-center">
               <span className="block text-xs text-gray-500">Fibras</span>
               <span className="text-lg font-bold text-teal-600">
-                {recipe.fiber}g
+                {parseFloat(recipe.fiber.toFixed(2))}g
               </span>
             </div>
             <div className="rounded bg-blue-50 p-2 text-center">
               <span className="block text-xs text-gray-500">Sódio</span>
               <span className="text-lg font-bold text-blue-600">
-                {recipe.sodium}mg
+                {parseFloat(recipe.sodium.toFixed(2))}mg
               </span>
             </div>
           </div>
